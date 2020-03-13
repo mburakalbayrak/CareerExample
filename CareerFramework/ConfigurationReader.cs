@@ -20,31 +20,41 @@ namespace CareerFramework
             _refreshTimerIntervalInMs = refreshTimerIntervalInMs;
         }
 
-        ////TO:DO refactor edilmeli
+        ////TO:DO must be refactoring
         public T GetValue<T>(string key)
         {
-            CareerSettingManager manager = new CareerSettingManager();
-            var value = manager.GetValue<T>(key, _applicationName);
-            return value != null ? value : default(T);
+            try
+            {
+                CareerSettingManager manager = new CareerSettingManager();
+                var value = manager.GetValue<T>(key, _applicationName);
+                if (value != null)
+                {
+                    SetDataFile(key, value.ToString());
+                }
+                return value != null ? value : default(T);
+            }
+            catch (Exception ex)
+            {
+                //// Logger excepton
+                var data = GetDataFile(key);
+                return (T)Convert.ChangeType(data, typeof(T)); 
+            }
 
-            // MemoryCache   ICacheProvider
+            // MemoryCache   ICacheProvider   refreshTime = _refreshTimerIntervalInMs
             // write Json file / read Json file
         }
 
-        ////private static string GetAppSetting(string key)
-        ////{
-        ////    try
-        ////    {
-        ////        var asmPath = Assembly.GetExecutingAssembly().Location;
-        ////        var config = ConfigurationManager.OpenExeConfiguration(asmPath);
-        ////        var setting = config.AppSettings.Settings[key];
-        ////        return setting.Value;
-        ////    }
-        ////    catch (Exception e)
-        ////    {
-        ////        throw new InvalidOperationException("Error reading configuration setting", e);
-        ////    }
-        ////}
+        void SetDataFile(string key, string value)
+        {
+            //// if exist or equal data
+            ////operation
+        }
+
+         T GetDataFile<T>(T name)
+        {
+            T value = name;
+            return (T)Convert.ChangeType(value, typeof(T));
+        }
 
     }
 }
